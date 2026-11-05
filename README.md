@@ -30,16 +30,15 @@
 
 <br/>
 
-<h2 align="center">Estatísticas do GitHub</h2>
-
-<p align="center">
-  <a href="https://github.com/ReiThomato">
+  <h2 align="center">Estatísticas do GitHub</h2>
+  
+  <p align="center">
     <img
-      height="165"
-      src="https://github-stats-extended.vercel.app/api?username=ReiThomato&rank_icon=github&show=reviews%2Cdiscussions_started%2Cdiscussions_answered%2Cprs_merged%2Cprs_merged_percentage%2Cprs_commented%2Cprs_reviewed%2Cissues_commented%2Ccontributions%2Call_time_contribs&show_icons=true&include_all_commits=true&contribs_include_own_repos=true&theme=dark_github"
-      alt="Estatísticas do GitHub de ReiThomato"
+      src="https://github-stats-extended.vercel.app/api?username=ReiThomato&show=stars,commits,prs,issues,contribs&hide=reviews,discussions_started,discussions_answered,prs_merged,prs_merged_percentage,prs_commented,prs_reviewed,issues_commented,all_time_contribs&theme=dark_github&show_icons=true&include_all_commits=true"
+      width="100%"
+      alt="Total Stars Earned, Total Commits, Total PRs, Total Issues e Contributed to (last year)"
     />
-  </a>
+  </p>
   <a href="https://github.com/ReiThomato">
     <img
       height="165"
