@@ -18,7 +18,7 @@
 
 <p align="center">
   <img
-    src="https://github-stats-extended.vercel.app/api?username=ReiThomato&hide_title=true&hide_rank=true&show_icons=true&include_all_commits=true&card_width=760&line_height=30&number_format=long&bg_color=0D080B&title_color=F06A83&text_color=EADDE0&icon_color=E04B68&border_color=59202F&border_radius=12"
+    src="https://github-stats-extended.vercel.app/api?username=ReiThomato&hide_title=true&hide_rank=true&show_icons=true&include_all_commits=true&card_width=480&line_height=30&number_format=long&bg_color=0D080B&title_color=F06A83&text_color=EADDE0&icon_color=E04B68&border_color=59202F&border_radius=10&contribs_include_own_repos=false"
     width="100%"
     alt="Total Stars Earned, Total Commits, Total PRs, Total Issues and Contributed to in the last year"
   />
@@ -34,10 +34,3 @@
   />
 </p>
 
-<p align="center">
-  <img
-    src="https://raw.githubusercontent.com/ReiThomato/ReiThomato/output/reithomato-snake.svg"
-    width="100%"
-    alt="Animated contribution graph in the ReiThomato crimson palette"
-  />
-</p>
