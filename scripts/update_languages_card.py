@@ -75,11 +75,17 @@ def fetch_svg(url: str) -> ET.Element:
 
 
 def recolor_languages(root: ET.Element) -> ET.Element:
-    """Apply the same muted crimson palette without external image embedding."""
+    """Apply restrained crimson shades while preserving true percentage widths."""
     root = copy.deepcopy(root)
     root.set("width", "440")
     root.set("height", "175")
     root.set("viewBox", "0 0 415 165")
+
+    # Same color family, different shades: each segment remains distinguishable.
+    # Segment widths are never changed; they continue to encode real percentages.
+    segment_palette = ["#B33A35", "#96312F", "#7A2B2D", "#61252B", "#492128"]
+    progress_index = 0
+    dot_index = 0
 
     for element in root.iter():
         tag = local_name(element.tag)
@@ -87,23 +93,29 @@ def recolor_languages(root: ET.Element) -> ET.Element:
         if tag == "style" and element.text:
             css = element.text
             replacements = (
-                (r"(\.header\s*\{[^}]*?\bfill:\s*)#[0-9a-fA-F]{3,8}", r"\1#B33A35"),
-                (r"(\.stat\s*\{[^}]*?\bfill:\s*)#[0-9a-fA-F]{3,8}", r"\1#E2DAD2"),
-                (r"(\.lang-name\s*\{[^}]*?\bfill:\s*)#[0-9a-fA-F]{3,8}", r"\1#E2DAD2"),
-                (r"(\.progress-background\s*\{\s*fill:\s*)#[0-9a-fA-F]{3,8}", r"\1#562528"),
+                (r"(\\.header\\s*\\{[^}]*?\\bfill:\\s*)#[0-9a-fA-F]{3,8}", r"\\1#B33A35"),
+                (r"(\\.stat\\s*\\{[^}]*?\\bfill:\\s*)#[0-9a-fA-F]{3,8}", r"\\1#E2DAD2"),
+                (r"(\\.lang-name\\s*\\{[^}]*?\\bfill:\\s*)#[0-9a-fA-F]{3,8}", r"\\1#E2DAD2"),
+                (r"(\\.progress-background\\s*\\{\\s*fill:\\s*)#[0-9a-fA-F]{3,8}", r"\\1#562528"),
             )
             for pattern, replacement in replacements:
                 css = re.sub(pattern, replacement, css, count=1)
             element.text = css
 
         elif tag == "circle":
-            element.set("fill", "#B33A35")
+            color = segment_palette[min(dot_index, len(segment_palette) - 1)]
+            element.set("fill", color)
+            dot_index += 1
 
         elif tag == "rect" and element.get("data-testid") == "lang-progress":
-            element.set("fill", "#B33A35")
+            color = segment_palette[min(progress_index, len(segment_palette) - 1)]
+            element.set("fill", color)
+            progress_index += 1
+
+    if progress_index == 0:
+        raise ValueError("The language SVG contains no proportional progress segments.")
 
     return root
-
 
 def get_viewbox(root: ET.Element) -> str:
     viewbox = root.get("viewBox") or root.get("viewbox")
@@ -206,13 +218,13 @@ def embed_panel(
 
 def build_combined_svg(stats: ET.Element, languages: ET.Element) -> str:
     # One SVG canvas means GitHub cannot wrap one panel beneath the other.
-    # Each visual retains its own 440 x 175 viewport; 40 px separate them.
+    # Each visual retains its own 440 x 175 viewport; only 10 px separate them.
     root = ET.Element(
         f"{{{SVG_NS}}}svg",
         {
-            "width": "920",
+            "width": "890",
             "height": "175",
-            "viewBox": "0 0 920 175",
+            "viewBox": "0 0 890 175",
             "role": "img",
             "aria-labelledby": "reithomato-title reithomato-desc",
         },
@@ -223,7 +235,7 @@ def build_combined_svg(stats: ET.Element, languages: ET.Element) -> str:
     desc.text = "Two equal-height panels fixed side by side: THE ROYAL RECORD first, LANGUAGES second."
 
     root.append(embed_panel(stats, prefix="record", x=0))
-    root.append(embed_panel(languages, prefix="languages", x=480))
+    root.append(embed_panel(languages, prefix="languages", x=450))
 
     ET.indent(root, space="  ")
     return ET.tostring(root, encoding="unicode", xml_declaration=True)
