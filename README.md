@@ -21,7 +21,7 @@
   <a href="https://github.com/SEU_USUARIO">
     <img
       height="165"
-      src="https://github-stats-extended.vercel.app/api?username=ReiThomato&show_icons=true&hide_border=true&bg_color=0D1117&title_color=60A5FA&text_color=C9D1D9&icon_color=2DD4BF&include_all_commits=true&count_private=false"
+      src="https://github-stats-extended.vercel.app/api?username=ReiThomato&show_icons=true&hide_border=true&bg_color=0D1117&title_color=60A5FA&text_color=C9D1D9&icon_color=2DD4BF&include_all_commits=true&count_private=true"
       alt="Estatísticas públicas do GitHub de ReiThomato"
     />
   </a>
