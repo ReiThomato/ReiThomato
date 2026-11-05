@@ -14,7 +14,7 @@ OUTPUT = ROOT / "languages-mono.svg"
 SOURCE_URL = (
     "https://github-stats-extended.vercel.app/api/top-langs/"
     "?username=ReiThomato"
-    "&layout=normal"
+    "&layout=compact"
     "&langs_count=5"
     "&card_width=440"
     "&stats_format=percentages"
