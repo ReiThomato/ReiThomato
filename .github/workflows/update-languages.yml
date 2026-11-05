@@ -1,0 +1,47 @@
+name: Refresh monochrome language card
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "23 6 * * *"
+  push:
+    branches:
+      - main
+    paths:
+      - "scripts/update_languages_card.py"
+      - ".github/workflows/update-languages.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: royal-language-card
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out profile repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate monochrome SVG
+        run: python scripts/update_languages_card.py
+
+      - name: Commit refreshed language card
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add languages-mono.svg
+          if git diff --cached --quiet; then
+            echo "Language card is already up to date."
+            exit 0
+          fi
+          git commit -m "chore: refresh monochrome language card"
+          git push
