@@ -14,4 +14,10 @@
   <img src="https://skillicons.dev/icons?i=html,css,js,ts,react,nextjs,firebase,vercel,git,github,linux,vscode&theme=dark&perline=12&size=26" alt="Technology stack" />
 </p>
 
-<div align="center"><img src="https://github-stats-extended.vercel.app/api?username=ReiThomato&hide_rank=true&show_icons=true&include_all_commits=true&card_width=440&line_height=23&number_format=long&bg_color=0D080B00&title_color=B33A35&text_color=E2DAD2&icon_color=B33A35&hide_border=true&contribs_include_own_repos=true&custom_title=%E2%99%9B%20THE%20ROYAL%20RECORD" width="440" height="175" alt="THE ROYAL RECORD — total stars, commits, pull requests, issues and contributions" /><img src="https://raw.githubusercontent.com/ReiThomato/ReiThomato/main/languages-mono.svg" width="440" height="175" alt="LANGUAGES — programming languages and percentages in monochrome crimson" /></div>
+<div align="center">
+  <img
+    src="https://raw.githubusercontent.com/ReiThomato/ReiThomato/main/royal-panels.svg"
+    width="100%"
+    alt="THE ROYAL RECORD à esquerda e LANGUAGES à direita, lado a lado"
+  />
+</div>
