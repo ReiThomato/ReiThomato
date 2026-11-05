@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='utf-8'?>
-<svg xmlns="http://www.w3.org/2000/svg" width="920" height="175" viewBox="0 0 920 175" role="img" aria-labelledby="reithomato-title reithomato-desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="890" height="175" viewBox="0 0 890 175" role="img" aria-labelledby="reithomato-title reithomato-desc">
   <title id="reithomato-title">REITHOMATO — THE ROYAL RECORD and LANGUAGES</title>
   <desc id="reithomato-desc">Two equal-height panels fixed side by side: THE ROYAL RECORD first, LANGUAGES second.</desc>
   <svg x="0" y="0" width="440" height="175" viewBox="0 0 440 183" preserveAspectRatio="xMidYMid meet">
     <title id="record-titleId">♛ THE ROYAL RECORD, Rank: C</title>
-    <desc id="record-descId">Total Stars Earned: 1, Total Commits  : 129, Total PRs: 0, Total Issues: 1, Contributed to (last year): 10</desc>
+    <desc id="record-descId">Total Stars Earned: 1, Total Commits  : 128, Total PRs: 0, Total Issues: 1, Contributed to (last year): 10</desc>
     <style>
           .record-header {
             font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif;
@@ -68,7 +68,7 @@
         stroke-dashoffset: 251.32741228718345;
       }
       to {
-        stroke-dashoffset: 245.52915806693215;
+        stroke-dashoffset: 245.5557182903936;
       }
     }
   
@@ -123,7 +123,7 @@
               <path fill-rule="evenodd" d="M1.643 3.143L.427 1.927A.25.25 0 000 2.104V5.75c0 .138.112.25.25.25h3.646a.25.25 0 00.177-.427L2.715 4.215a6.5 6.5 0 11-1.18 4.458.75.75 0 10-1.493.154 8.001 8.001 0 101.6-5.684zM7.75 4a.75.75 0 01.75.75v2.992l2.028.812a.75.75 0 01-.557 1.392l-2.5-1A.75.75 0 017 8.25v-3.5A.75.75 0 017.75 4z" />
             </svg>
             <text class="record-stat record-bold" x="25" y="12.5">Total Commits:</text>
-            <text class="record-stat record-bold" x="224.01" y="12.5" data-testid="commits">129</text>
+            <text class="record-stat record-bold" x="224.01" y="12.5" data-testid="commits">128</text>
           </g>
         </g>
         <g transform="translate(0, 46)">
@@ -156,7 +156,7 @@
       </svg>
     </g>
   </svg>
-  <svg x="480" y="0" width="440" height="175" viewBox="0 0 415 165" preserveAspectRatio="xMidYMid meet">
+  <svg x="450" y="0" width="440" height="175" viewBox="0 0 415 165" preserveAspectRatio="xMidYMid meet">
     <title id="languages-titleId" />
     <desc id="languages-descId" />
     <style>
@@ -248,34 +248,34 @@
         <mask id="languages-rect-mask">
           <rect x="0" y="0" width="390" height="8" fill="white" rx="5" />
         </mask>
-        <rect mask="url(#languages-rect-mask)" data-testid="lang-progress" x="0" y="0" width="148.69" height="8" fill="#B33A35" />
-        <rect mask="url(#languages-rect-mask)" data-testid="lang-progress" x="148.69" y="0" width="68.32" height="8" fill="#B33A35" />
-        <rect mask="url(#languages-rect-mask)" data-testid="lang-progress" x="217.01" y="0" width="68.22" height="8" fill="#B33A35" />
-        <rect mask="url(#languages-rect-mask)" data-testid="lang-progress" x="285.23" y="0" width="54.38" height="8" fill="#B33A35" />
-        <rect mask="url(#languages-rect-mask)" data-testid="lang-progress" x="339.61" y="0" width="50.4" height="8" fill="#B33A35" />
+        <rect mask="url(#languages-rect-mask)" data-testid="lang-progress" x="0" y="0" width="148.52" height="8" fill="#B33A35" />
+        <rect mask="url(#languages-rect-mask)" data-testid="lang-progress" x="148.52" y="0" width="68.53" height="8" fill="#96312F" />
+        <rect mask="url(#languages-rect-mask)" data-testid="lang-progress" x="217.05" y="0" width="68.1" height="8" fill="#7A2B2D" />
+        <rect mask="url(#languages-rect-mask)" data-testid="lang-progress" x="285.15" y="0" width="54.28" height="8" fill="#61252B" />
+        <rect mask="url(#languages-rect-mask)" data-testid="lang-progress" x="339.42999999999995" y="0" width="50.57" height="8" fill="#492128" />
         <g transform="translate(0, 25)">
           <g transform="translate(0, 0)">
             <g transform="translate(0, 0)">
               <g class="languages-stagger" style="animation-delay: 450ms">
                 <circle cx="5" cy="6" r="5" fill="#B33A35" />
                 <text data-testid="lang-name" x="15" y="10" class="languages-lang-name">
-        TypeScript 38.12%
+        TypeScript 38.08%
       </text>
               </g>
             </g>
             <g transform="translate(0, 25)">
               <g class="languages-stagger" style="animation-delay: 600ms">
-                <circle cx="5" cy="6" r="5" fill="#B33A35" />
+                <circle cx="5" cy="6" r="5" fill="#96312F" />
                 <text data-testid="lang-name" x="15" y="10" class="languages-lang-name">
-        JavaScript 17.52%
+        JavaScript 17.57%
       </text>
               </g>
             </g>
             <g transform="translate(0, 50)">
               <g class="languages-stagger" style="animation-delay: 750ms">
-                <circle cx="5" cy="6" r="5" fill="#B33A35" />
+                <circle cx="5" cy="6" r="5" fill="#7A2B2D" />
                 <text data-testid="lang-name" x="15" y="10" class="languages-lang-name">
-        Kotlin 17.49%
+        Kotlin 17.46%
       </text>
               </g>
             </g>
@@ -283,17 +283,17 @@
           <g transform="translate(150, 0)">
             <g transform="translate(0, 0)">
               <g class="languages-stagger" style="animation-delay: 450ms">
-                <circle cx="5" cy="6" r="5" fill="#B33A35" />
+                <circle cx="5" cy="6" r="5" fill="#61252B" />
                 <text data-testid="lang-name" x="15" y="10" class="languages-lang-name">
-        CSS 13.94%
+        CSS 13.92%
       </text>
               </g>
             </g>
             <g transform="translate(0, 25)">
               <g class="languages-stagger" style="animation-delay: 600ms">
-                <circle cx="5" cy="6" r="5" fill="#B33A35" />
+                <circle cx="5" cy="6" r="5" fill="#492128" />
                 <text data-testid="lang-name" x="15" y="10" class="languages-lang-name">
-        HTML 12.92%
+        HTML 12.97%
       </text>
               </g>
             </g>
