@@ -14,23 +14,17 @@
   <img src="https://skillicons.dev/icons?i=html,css,js,ts,react,nextjs,firebase,vercel,git,github,linux,vscode&theme=dark&perline=12&size=26" alt="Technology stack" />
 </p>
 
-<table align="center">
-  <tr>
-    <td align="center" valign="top" width="50%">
-      <strong>THE ROYAL RECORD</strong><br />
-      <img
-        src="https://github-stats-extended.vercel.app/api?username=ReiThomato&hide_title=true&hide_rank=true&show_icons=true&include_all_commits=true&card_width=380&line_height=20&number_format=long&bg_color=0D080B&title_color=F06A83&text_color=EADDE0&icon_color=E04B68&border_color=59202F&border_radius=10&contribs_include_own_repos=true"
-        width="100%"
-        alt="Stars, commits, pull requests, issues and contributed repositories"
-      />
-    </td>
-    <td align="center" valign="top" width="50%">
-      <strong>LANGUAGES</strong><br />
-      <img
-        src="https://raw.githubusercontent.com/ReiThomato/ReiThomato/main/languages-mono.svg"
-        width="100%"
-        alt="Programming languages and percentages in a monochrome crimson style"
-      />
-    </td>
-  </tr>
-</table>
+<p align="center">
+  <img
+    align="center"
+    width="440"
+    src="https://github-stats-extended.vercel.app/api?username=ReiThomato&hide_rank=true&show_icons=true&include_all_commits=true&card_width=440&line_height=27&number_format=long&bg_color=0D080B00&title_color=E8798E&text_color=F3E7EA&icon_color=E8798E&hide_border=true&contribs_include_own_repos=true&custom_title=%E2%99%9B%20THE%20ROYAL%20RECORD"
+    alt="THE ROYAL RECORD — total stars, commits, pull requests, issues and contributions"
+  />
+  <img
+    align="center"
+    width="440"
+    src="https://raw.githubusercontent.com/ReiThomato/ReiThomato/main/languages-mono.svg"
+    alt="LANGUAGES — programming languages and percentages in monochrome crimson"
+  />
+</p>
