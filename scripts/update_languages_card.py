@@ -81,8 +81,7 @@ def recolor_languages(root: ET.Element) -> ET.Element:
     root.set("height", "175")
     root.set("viewBox", "0 0 415 165")
 
-    # Same color family, different shades: each segment remains distinguishable.
-    # Segment widths are never changed; they continue to encode real percentages.
+    # Monochromatic crimson shades distinguish the real proportional segments.
     segment_palette = ["#B33A35", "#96312F", "#7A2B2D", "#61252B", "#492128"]
     progress_index = 0
     dot_index = 0
@@ -93,10 +92,10 @@ def recolor_languages(root: ET.Element) -> ET.Element:
         if tag == "style" and element.text:
             css = element.text
             replacements = (
-                (r"(\\.header\\s*\\{[^}]*?\\bfill:\\s*)#[0-9a-fA-F]{3,8}", r"\\1#B33A35"),
-                (r"(\\.stat\\s*\\{[^}]*?\\bfill:\\s*)#[0-9a-fA-F]{3,8}", r"\\1#E2DAD2"),
-                (r"(\\.lang-name\\s*\\{[^}]*?\\bfill:\\s*)#[0-9a-fA-F]{3,8}", r"\\1#E2DAD2"),
-                (r"(\\.progress-background\\s*\\{\\s*fill:\\s*)#[0-9a-fA-F]{3,8}", r"\\1#562528"),
+                (r"(\.header\s*\{[^}]*?\bfill:\s*)#[0-9a-fA-F]{3,8}", r"\1#B33A35"),
+                (r"(\.stat\s*\{[^}]*?\bfill:\s*)#[0-9a-fA-F]{3,8}", r"\1#E2DAD2"),
+                (r"(\.lang-name\s*\{[^}]*?\bfill:\s*)#[0-9a-fA-F]{3,8}", r"\1#E2DAD2"),
+                (r"(\.progress-background\s*\{\s*fill:\s*)#[0-9a-fA-F]{3,8}", r"\1#562528"),
             )
             for pattern, replacement in replacements:
                 css = re.sub(pattern, replacement, css, count=1)
