@@ -1,4 +1,4 @@
-name: Refresh monochrome language card
+name: Refresh REITHOMATO profile panels
 
 on:
   workflow_dispatch:
@@ -15,7 +15,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: royal-language-card
+  group: reithomato-profile-panels
   cancel-in-progress: true
 
 jobs:
@@ -31,17 +31,17 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Generate monochrome SVG
+      - name: Generate both panels and the combined canvas
         run: python scripts/update_languages_card.py
 
-      - name: Commit refreshed language card
+      - name: Commit refreshed profile visuals
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add languages-mono.svg
+          git add languages-mono.svg royal-panels.svg
           if git diff --cached --quiet; then
-            echo "Language card is already up to date."
+            echo "Profile visuals are already up to date."
             exit 0
           fi
-          git commit -m "chore: refresh monochrome language card"
+          git commit -m "chore: refresh REITHOMATO profile panels"
           git push
