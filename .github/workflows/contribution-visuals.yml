@@ -1,33 +1,16 @@
-name: Update royal contribution visuals
+name: Contribution visuals (disabled)
 
 on:
-  schedule:
-    - cron: "23 0 * * *"
-  workflow_dispatch:
+  push:
+    branches:
+      - workflow-disabled-no-trigger
 
 permissions:
-  contents: write
-
-concurrency:
-  group: royal-contribution-visuals
-  cancel-in-progress: true
+  contents: read
 
 jobs:
-  generate:
+  disabled:
+    if: false
     runs-on: ubuntu-latest
     steps:
-      - name: Generate contribution snake
-        uses: Platane/snk@v3
-        with:
-          github_user_name: ReiThomato
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          outputs: |
-            dist/reithomato-snake.svg?color_snake=%23F7D18A&color_dots=%230D080B,%233A101D,%23731A34,%23B52A4C,%23F05B78
-
-      - name: Publish generated SVG
-        uses: crazy-max/ghaction-github-pages@df5cc2bfa78282ded844b354faee141f06b41865
-        with:
-          target_branch: output
-          build_dir: dist
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo "Contribution animation has been disabled."
