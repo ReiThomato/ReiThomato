@@ -14,17 +14,26 @@
   <img src="https://skillicons.dev/icons?i=html,css,js,ts,react,nextjs,firebase,vercel,git,github,linux,vscode&theme=dark&perline=12&size=26" alt="Technology stack" />
 </p>
 
-<p align="center"><strong>LANGUAGE DISTRIBUTION</strong></p>
-
-<p align="center">
-  <img
-    src="https://github-stats-extended.vercel.app/api/top-langs/?username=ReiThomato&layout=normal&langs_count=7&size_weight=0.5&count_weight=0.5&stats_format=percentages&card_width=420&hide_title=true&bg_color=0D080B&title_color=F06A83&text_color=EADDE0&border_color=59202F&border_radius=10"
-    width="420"
-    alt="Programming languages used across ReiThomato repositories, with percentages"
-  />
-</p>
-
-<p align="center"><strong>THE ROYAL RECORD</strong></p>
+<table align="center">
+  <tr>
+    <td align="center" valign="top" width="50%">
+      <sub><strong>LANGUAGES</strong></sub><br />
+      <img
+        src="https://github-stats-extended.vercel.app/api/top-langs/?username=ReiThomato&layout=normal&langs_count=6&size_weight=0.5&count_weight=0.5&stats_format=percentages&card_width=380&hide_title=true&bg_color=0D080B&title_color=F06A83&text_color=EADDE0&border_color=59202F&border_radius=10"
+        width="100%"
+        alt="Programming languages and percentages"
+      />
+    </td>
+    <td align="center" valign="top" width="50%">
+      <sub><strong>THE ROYAL RECORD</strong></sub><br />
+      <img
+        src="https://github-stats-extended.vercel.app/api?username=ReiThomato&hide_title=true&hide_rank=true&show_icons=true&include_all_commits=true&card_width=380&line_height=23&number_format=long&bg_color=0D080B&title_color=F06A83&text_color=EADDE0&icon_color=E04B68&border_color=59202F&border_radius=10&contribs_include_own_repos=true"
+        width="100%"
+        alt="Stars, commits, pull requests, issues and repositories contributed to"
+      />
+    </td>
+  </tr>
+</table>
 
 <p align="center">
   <img
