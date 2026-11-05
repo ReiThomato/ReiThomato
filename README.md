@@ -6,17 +6,9 @@
     alt="Banner ReiThomato — Tecnologia, Ideias e Projetos"
   />
 </p><h2 align="center">Olá, seja bem-vindo ao meu GitHub!</h2><p align="center">
-  <em>Transformando ideias em projetos, aprendendo e evoluindo a cada versão.</em>
+  <em>Aprendendo e evoluindo.</em>
 </p><p align="center">
-  Gosto de explorar tecnologia, experimentar ferramentas e criar soluções digitais.
-  Tenho interesse especial em desenvolvimento assistido por inteligência artificial,
-  construção de interfaces e aplicações web.
-</p>Sobre mim
-- Desenvolvo e experimento projetos digitais com apoio de ferramentas de IA.
-- Gosto de unir criatividade, funcionalidade e boas experiências de uso.
-- Estou aprendendo continuamente sobre desenvolvimento, versionamento e arquitetura de aplicações.
-- Uso este espaço para registrar projetos, explorar ideias e acompanhar minha evolução.
-Tecnologias e ferramentas
+</p>
 <p align="center">
   <img
     src="https://skillicons.dev/icons?i=html,css,js,ts,react,nextjs,firebase,vercel,git,github,linux,vscode&theme=dark"
@@ -41,7 +33,6 @@ Tecnologias e ferramentas
     />
   </a>
 </p><p align="center">
-  <sub>Os cartões dependem de um serviço externo e podem demorar a atualizar ou ficar temporariamente indisponíveis.</sub>
 </p><p align="center">
   <strong>Um projeto de cada vez. Uma melhoria de cada vez.</strong>
 </p><p align="center">
