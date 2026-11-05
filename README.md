@@ -14,19 +14,4 @@
   <img src="https://skillicons.dev/icons?i=html,css,js,ts,react,nextjs,firebase,vercel,git,github,linux,vscode&theme=dark&perline=12&size=26" alt="Technology stack" />
 </p>
 
-<p align="center">
-  <img
-    align="center"
-    width="440"
-    height="165"
-    src="https://github-stats-extended.vercel.app/api?username=ReiThomato&hide_rank=true&show_icons=true&include_all_commits=true&card_width=440&line_height=22&number_format=long&bg_color=0D080B00&title_color=E8798E&text_color=F3E7EA&icon_color=E8798E&hide_border=true&contribs_include_own_repos=true&custom_title=%E2%99%9B%20THE%20ROYAL%20RECORD"
-    alt="THE ROYAL RECORD — total stars, commits, pull requests, issues and contributions"
-  />
-  <img
-    align="center"
-    width="440"
-    height="165"
-    src="https://raw.githubusercontent.com/ReiThomato/ReiThomato/main/languages-mono.svg"
-    alt="LANGUAGES — programming languages and percentages in monochrome crimson"
-  />
-</p>
+<div align="center"><img src="https://github-stats-extended.vercel.app/api?username=ReiThomato&hide_rank=true&show_icons=true&include_all_commits=true&card_width=440&line_height=22&number_format=long&bg_color=0D080B00&title_color=E8798E&text_color=F3E7EA&icon_color=E8798E&hide_border=true&contribs_include_own_repos=true&custom_title=%E2%99%9B%20THE%20ROYAL%20RECORD" width="48%" height="165" alt="THE ROYAL RECORD — total stars, commits, pull requests, issues and contributions" /><img src="https://raw.githubusercontent.com/ReiThomato/ReiThomato/main/languages-mono.svg" width="48%" height="165" alt="LANGUAGES — programming languages and percentages in monochrome crimson" /></div>
