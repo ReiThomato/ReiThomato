@@ -1,7 +1,7 @@
 ## Hi there 👋
 
   <img
-    src="https://capsule-render.vercel.app/api?type=waving&height=190&color=0:0B1220,48:172554,100:0F766E&text=HYAGO&fontColor=F8FAFC&fontSize=52&fontAlignY=38&desc=Tecnologia%20%7C%20Ideias%20%7C%20Projetos&descAlignY=61&descSize=16&animation=fadeIn"
+    src="https://capsule-render.vercel.app/api?type=waving&height=190&color=0:0B1220,48:172554,100:0F766E&text=ReiThomato&fontColor=F8FAFC&fontSize=52&fontAlignY=38&desc=Tecnologia%20%7C%20Ideias%20%7C%20Projetos&descAlignY=61&descSize=16&animation=fadeIn"
     width="100%"
     alt="Banner ReiThomato — Tecnologia, Ideias e Projetos"
   />
