@@ -24,13 +24,3 @@
   />
 </p>
 
-<h3 align="center">THE CHRONICLE</h3>
-
-<p align="center">
-  <img
-    src="https://github-readme-activity-graph.vercel.app/graph?username=ReiThomato&bg_color=0D080B&color=EADDE0&title_color=F06A83&line=E04B68&point=FFD0D8&area_color=6E1B34&area=true&hide_border=true&hide_title=true&radius=10&height=230&days=35&grid=false"
-    width="100%"
-    alt="GitHub activity over the last 35 days"
-  />
-</p>
-
