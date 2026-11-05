@@ -17,29 +17,20 @@
 <table align="center">
   <tr>
     <td align="center" valign="top" width="50%">
-      <sub><strong>LANGUAGES</strong></sub><br />
+      <strong>THE ROYAL RECORD</strong><br />
       <img
-        src="https://github-stats-extended.vercel.app/api/top-langs/?username=ReiThomato&layout=normal&langs_count=6&size_weight=0.5&count_weight=0.5&stats_format=percentages&card_width=380&hide_title=true&bg_color=0D080B&title_color=F06A83&text_color=EADDE0&border_color=59202F&border_radius=10"
+        src="https://github-stats-extended.vercel.app/api?username=ReiThomato&hide_title=true&hide_rank=true&show_icons=true&include_all_commits=true&card_width=380&line_height=20&number_format=long&bg_color=0D080B&title_color=F06A83&text_color=EADDE0&icon_color=E04B68&border_color=59202F&border_radius=10&contribs_include_own_repos=true"
         width="100%"
-        alt="Programming languages and percentages"
+        alt="Stars, commits, pull requests, issues and contributed repositories"
       />
     </td>
     <td align="center" valign="top" width="50%">
-      <sub><strong>THE ROYAL RECORD</strong></sub><br />
+      <strong>LANGUAGES</strong><br />
       <img
-        src="https://github-stats-extended.vercel.app/api?username=ReiThomato&hide_title=true&hide_rank=true&show_icons=true&include_all_commits=true&card_width=380&line_height=23&number_format=long&bg_color=0D080B&title_color=F06A83&text_color=EADDE0&icon_color=E04B68&border_color=59202F&border_radius=10&contribs_include_own_repos=true"
+        src="https://raw.githubusercontent.com/ReiThomato/ReiThomato/main/languages-mono.svg"
         width="100%"
-        alt="Stars, commits, pull requests, issues and repositories contributed to"
+        alt="Programming languages and percentages in a monochrome crimson style"
       />
     </td>
   </tr>
 </table>
-
-<p align="center">
-  <img
-    src="https://github-stats-extended.vercel.app/api?username=ReiThomato&hide_title=true&hide_rank=true&show_icons=true&include_all_commits=true&card_width=420&line_height=23&number_format=long&bg_color=0D080B&title_color=F06A83&text_color=EADDE0&icon_color=E04B68&border_color=59202F&border_radius=10&contribs_include_own_repos=true"
-    width="420"
-    alt="Total Stars Earned, Total Commits, Total PRs, Total Issues and Contributed to in the last year"
-  />
-</p>
-
