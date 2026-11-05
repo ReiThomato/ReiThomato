@@ -1,65 +1,29 @@
-
-# Hi there 👋
-
-<p align="center">
+<div align="center">
   <img
-    src="https://capsule-render.vercel.app/api?type=waving&height=190&color=0:0B1220,48:172554,100:0F766E&text=ReiThomato&fontColor=F8FAFC&fontSize=52&fontAlignY=38&desc=Tecnologia%20%7C%20Ideias%20%7C%20Projetos&descAlignY=61&descSize=16&animation=fadeIn"
+    src="https://capsule-render.vercel.app/api?type=rect&height=112&color=0:17090E,55:5B1425,100:9E293E&text=ReiThomato&fontColor=FFF1F3&fontSize=48&fontFamily=JetBrains%20Mono&fontAlignY=54&animation=fadeIn"
     width="100%"
-    alt="Banner ReiThomato — Tecnologia, Ideias e Projetos"
+    alt="ReiThomato"
   />
-</p>
 
-<h2 align="center">Olá, seja bem-vindo ao meu GitHub!</h2>
-
-<p align="center">
-  <em>Aprendendo e evoluindo.</em>
-</p>
-
-<br/>
-
-<p align="center">
   <img
-    src="https://skillicons.dev/icons?i=html,css,js,ts,react,nextjs,firebase,vercel,git,github,linux,vscode&theme=dark"
+    src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=500&size=14&duration=3000&pause=1700&color=E76A7B&center=true&vCenter=true&width=420&height=28&lines=IDEAS+INTO+REAL+PROJECTS"
+    alt="Ideas into real projects"
+  />
+
+  <br />
+
+  <img
+    src="https://skillicons.dev/icons?i=html,css,js,ts,react,nextjs,firebase,vercel,git,linux&theme=dark&size=30"
     alt="Tecnologias e ferramentas"
   />
-</p>
+</div>
 
-<p align="center">
-  <sub>Tecnologias e ferramentas com as quais trabalho, estudo ou experimento — não uma lista de certificações ou níveis de domínio.</sub>
-</p>
+<div align="center">
+  <h3>ACTIVITY</h3>
 
-<br/>
-
-  <h2 align="center">Estatísticas do GitHub</h2>
-  
-  <p align="center">
-    <img
-      src="https://github-stats-extended.vercel.app/api?username=ReiThomato&show=stars,commits,prs,issues,contribs&hide=reviews,discussions_started,discussions_answered,prs_merged,prs_merged_percentage,prs_commented,prs_reviewed,issues_commented,all_time_contribs&theme=dark_github&show_icons=true&include_all_commits=true"
-      width="100%"
-      alt="Total Stars Earned, Total Commits, Total PRs, Total Issues e Contributed to (last year)"
-    />
-  </p>
-  <a href="https://github.com/ReiThomato">
-    <img
-      height="165"
-      src="https://github-stats-extended.vercel.app/api/top-langs/?username=ReiThomato&layout=compact&hide_border=true&bg_color=0D1117&title_color=60A5FA&text_color=C9D1D9&langs_count=6"
-      alt="Linguagens mais presentes nos repositórios"
-    />
-  </a>
-</p>
-
-<br/>
-
-<p align="center">
-  <strong>Um projeto de cada vez. Uma melhoria de cada vez.</strong>
-</p>
-
-<br/>
-
-<p align="center">
   <img
-    src="https://capsule-render.vercel.app/api?type=waving&height=100&section=footer&color=0:0B1220,48:172554,100:0F766E"
+    src="https://github-stats-extended.vercel.app/api?username=ReiThomato&hide_title=true&hide_rank=true&show_icons=true&include_all_commits=true&card_width=650&line_height=27&number_format=long&bg_color=10090C&title_color=E65A6B&text_color=F0E4E6&icon_color=E65A6B&border_color=4A1C28&border_radius=10"
     width="100%"
-    alt=""
+    alt="Total Stars Earned, Total Commits, Total PRs, Total Issues e Contributed to (last year)"
   />
-</p>
+</div>
