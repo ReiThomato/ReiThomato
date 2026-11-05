@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="380" height="165" viewBox="0 0 380 165">
+  <defs>
+    <filter id="royal-monochrome" color-interpolation-filters="sRGB">
+      <feColorMatrix type="saturate" values="0" result="gray"/>
+      <feComponentTransfer in="gray">
+        <feFuncR type="table" tableValues="0.035 0.94"/>
+        <feFuncG type="table" tableValues="0.018 0.48"/>
+        <feFuncB type="table" tableValues="0.025 0.55"/>
+      </feComponentTransfer>
+    </filter>
+  </defs>
+  <image
+    x="0" y="0" width="380" height="165"
+    preserveAspectRatio="xMidYMid meet"
+    filter="url(#royal-monochrome)"
+    xlink:href="https://github-stats-extended.vercel.app/api/top-langs/?username=ReiThomato&amp;layout=compact&amp;langs_count=6&amp;size_weight=0.5&amp;count_weight=0.5&amp;stats_format=percentages&amp;card_width=380&amp;hide_title=true&amp;bg_color=0D080B&amp;text_color=EADDE0&amp;border_color=59202F&amp;border_radius=10"
+  />
+</svg>
