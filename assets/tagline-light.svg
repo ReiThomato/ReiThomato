@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="24" viewBox="0 0 400 24" role="img" aria-label="Construindo com propósito">
+<style>
+  .t { font-family: 'Segoe UI', Ubuntu, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 11.5px; font-weight: 500; letter-spacing: 1.5px; fill: #0969DA; }
+  @keyframes cycle {
+    0%   { opacity: 0; }
+    6%   { opacity: 1; }
+    27%  { opacity: 1; }
+    33%  { opacity: 0; }
+    100% { opacity: 0; }
+  }
+  .b { animation: cycle 10.2s linear infinite; }
+  @media (prefers-reduced-motion: reduce) { .b { animation: none; opacity: 1; } }
+</style>
+<text class="t b" x="200" y="16" text-anchor="middle" style="animation-delay:-6.8s">CONSTRUINDO COM PROPÓSITO</text>
+<text class="t b" x="200" y="16" text-anchor="middle" style="animation-delay:-3.4s">IDEIAS EM SISTEMAS</text>
+<text class="t b" x="200" y="16" text-anchor="middle" style="animation-delay:-0.0s">CRIAR. REFINAR. REPETIR.</text>
+</svg>

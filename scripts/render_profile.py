@@ -41,6 +41,8 @@ ROOT = Path(__file__).resolve().parents[1]
 LIGHT_OUTPUT = ROOT / "royal-panels.svg"
 DARK_OUTPUT = ROOT / "royal-panels-dark.svg"
 LANGUAGES_OUTPUT = ROOT / "languages-mono.svg"
+TAGLINE_LIGHT = ROOT / "assets" / "tagline-light.svg"
+TAGLINE_DARK = ROOT / "assets" / "tagline-dark.svg"
 
 API = "https://api.github.com"
 USER_AGENT = "REITHOMATO-profile-renderer/5.0"
@@ -453,6 +455,46 @@ def build_combined_svg(d: dict, theme_name: str) -> str:
     return "\n".join(parts)
 
 
+def build_tagline_svg(colour: str) -> str:
+    """The cycling phrases that fade in, hold, and fade out one after another."""
+    width, height = 400, 24
+    lines = [
+        "CONSTRUINDO COM PROP\u00d3SITO",
+        "IDEIAS EM SISTEMAS",
+        "CRIAR. REFINAR. REPETIR.",
+    ]
+    slot = 3.4  # seconds each phrase stays on screen
+    total = slot * len(lines)
+    parts = [
+        "<?xml version='1.0' encoding='utf-8'?>",
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
+        f'viewBox="0 0 {width} {height}" role="img" '
+        f'aria-label="Construindo com prop\u00f3sito">',
+        "<style>",
+        f"  .t {{ font-family: {SANS}; font-size: 11.5px; font-weight: 500; "
+        f"letter-spacing: 1.5px; fill: {colour}; }}",
+        "  @keyframes cycle {",
+        "    0%   { opacity: 0; }",
+        "    6%   { opacity: 1; }",
+        "    27%  { opacity: 1; }",
+        "    33%  { opacity: 0; }",
+        "    100% { opacity: 0; }",
+        "  }",
+        f"  .b {{ animation: cycle {total:.1f}s linear infinite; }}",
+        "  @media (prefers-reduced-motion: reduce) { .b { animation: none; opacity: 1; } }",
+        "</style>",
+    ]
+    for index, line in enumerate(lines):
+        # Negative delays start each phrase at its own point in the cycle.
+        delay = -slot * (len(lines) - 1 - index)
+        parts.append(
+            f'<text class="t b" x="{width / 2:.0f}" y="16" text-anchor="middle" '
+            f'style="animation-delay:{delay:.1f}s">{escape(line)}</text>'
+        )
+    parts.append("</svg>")
+    return "\n".join(parts)
+
+
 def build_languages_svg(d: dict) -> str:
     width, height = 440, 236
     theme = dict(THEMES["dark"], name="dark")
@@ -487,6 +529,12 @@ def main() -> int:
     LIGHT_OUTPUT.write_text(build_combined_svg(data, "light") + "\n", encoding="utf-8")
     DARK_OUTPUT.write_text(build_combined_svg(data, "dark") + "\n", encoding="utf-8")
     LANGUAGES_OUTPUT.write_text(build_languages_svg(data) + "\n", encoding="utf-8")
+    TAGLINE_LIGHT.write_text(
+        build_tagline_svg(THEMES["light"]["accent"]) + "\n", encoding="utf-8"
+    )
+    TAGLINE_DARK.write_text(
+        build_tagline_svg(THEMES["dark"]["accent"]) + "\n", encoding="utf-8"
+    )
 
     print(
         f"{data['login']}: {data['stars']} estrelas, {data['commits']} commits, "
