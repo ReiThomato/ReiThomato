@@ -309,7 +309,7 @@ def stats_panel(d: dict, width: float, height: float, theme: dict) -> str:
         ("CONTRIBUI\u00c7\u00d5ES / ANO", pretty(d["contributions"])),
     ]
 
-    body = [panel_header("O REGISTRO REAL", "crown", width, theme)]
+    body = [panel_header("REGISTRO", "crown", width, theme)]
     rows = [48, 110, 172]
     for index, y in enumerate(rows):
         delay = ROW_DELAYS[index * 2]
@@ -459,8 +459,8 @@ def build_tagline_svg(colour: str) -> str:
     """The cycling phrases that fade in, hold, and fade out one after another."""
     width, height = 400, 24
     lines = [
-        "CONSTRUINDO COM PROP\u00d3SITO",
-        "IDEIAS EM SISTEMAS",
+        "APRENDENDO E CONSTRUINDO",
+        "TRANSFORMANDO IDEIAS EM SISTEMAS",
         "CRIAR. REFINAR. REPETIR.",
     ]
     slot = 3.4  # seconds each phrase stays on screen
@@ -469,7 +469,7 @@ def build_tagline_svg(colour: str) -> str:
         "<?xml version='1.0' encoding='utf-8'?>",
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
         f'viewBox="0 0 {width} {height}" role="img" '
-        f'aria-label="Construindo com prop\u00f3sito">',
+        f'aria-label="Aprendendo e construindo">',
         "<style>",
         f"  .t {{ font-family: {SANS}; font-size: 11.5px; font-weight: 500; "
         f"letter-spacing: 1.5px; fill: {colour}; }}",

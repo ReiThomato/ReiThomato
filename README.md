@@ -32,15 +32,8 @@
 
 <p align="center">
   <img src="https://skillicons.dev/icons?i=go,kotlin,python,typescript,javascript,react,nextjs,tailwindcss,vite,express,firebase,vercel,git,github,linux,vscode&theme=dark&perline=16&size=30" alt="Linguagens e ferramentas" />
-</p>
-
-<p align="center">
+  <br />
   <sub><em>Uso real em projetos e estudo — não um atestado de domínio.</em></sub>
-</p>
-
-<p align="center">
-  <sub>
-    Cada número é medido, nunca digitado — atualizado todos os dias por
-    <a href="https://github.com/ReiThomato/ReiThomato/actions/workflows/update-languages.yml">esta automação</a>.
-  </sub>
+  <br />
+  <sub>Cada número é medido, nunca digitado — atualizado todos os dias por <a href="https://github.com/ReiThomato/ReiThomato/actions/workflows/update-languages.yml">esta automação</a>.</sub>
 </p>
