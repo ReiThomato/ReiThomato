@@ -1,29 +1,30 @@
-name: Refresh REITHOMATO profile panels
+name: Refresh profile visuals
 
 on:
   workflow_dispatch:
   schedule:
+    # Every day at 06:23 UTC (03:23 in Sao Paulo).
     - cron: "23 6 * * *"
   push:
     branches:
       - main
     paths:
-      - "scripts/update_languages_card.py"
+      - "scripts/render_profile.py"
       - ".github/workflows/update-languages.yml"
 
 permissions:
   contents: write
 
 concurrency:
-  group: reithomato-profile-panels
+  group: reithomato-profile-visuals
   cancel-in-progress: true
 
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
-      - name: Check out profile repository
+      - name: Check out the profile repository
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -31,17 +32,23 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Generate both panels and the combined canvas
-        run: python scripts/update_languages_card.py
+      - name: Render the panels from the GitHub API
+        # PROFILE_TOKEN is a fine-grained token with read access to the
+        # profile's own (private) repositories. Without it the language
+        # card would silently drop every private repository.
+        run: python scripts/render_profile.py
+        env:
+          PROFILE_TOKEN: ${{ secrets.PROFILE_TOKEN }}
+          PROFILE_LOGIN: ReiThomato
 
-      - name: Commit refreshed profile visuals
+      - name: Commit the refreshed visuals
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add languages-mono.svg royal-panels.svg
+          git add royal-panels.svg languages-mono.svg
           if git diff --cached --quiet; then
             echo "Profile visuals are already up to date."
             exit 0
           fi
-          git commit -m "chore: refresh REITHOMATO profile panels"
+          git commit -m "chore: refresh profile visuals"
           git push
