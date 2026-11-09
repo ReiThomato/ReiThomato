@@ -4,21 +4,30 @@
 Everything shown is measured, never hand-typed:
 
 * statistics come from REST/GraphQL calls made with the workflow token,
-* languages come from the byte totals GraphQL reports per repository,
-* the contribution heatmap comes from the contribution calendar,
-* streak and best day are derived from that same calendar.
+* languages come from the byte totals GraphQL reports per repository.
 
-Two files are produced:
+Colour policy
+-------------
+The card uses GitHub's own neutral palette so it never fights the theme, and
+every language keeps its official ``linguist`` colour. If a repository uses a
+language outside the table below it falls back to a neutral grey instead of
+inventing a hue.
 
-* ``royal-panels.svg``   - the full profile canvas
-* ``languages-mono.svg`` - a standalone language card, kept for reuse
+The artwork has no background, so two palettes are emitted with identical
+animation code. The README picks one with GitHub's own theme tokens
+(``#gh-light-mode-only`` / ``#gh-dark-mode-only``).
+
+Files produced:
+
+* ``royal-panels.svg``      - light theme palette
+* ``royal-panels-dark.svg`` - dark theme palette
+* ``languages-mono.svg``    - standalone language card
 
 Standard library only: no third-party dependency to install or pin.
 """
 
 from __future__ import annotations
 
-import datetime as dt
 import json
 import os
 import sys
@@ -29,39 +38,83 @@ from pathlib import Path
 from xml.sax.saxutils import escape
 
 ROOT = Path(__file__).resolve().parents[1]
-COMBINED_OUTPUT = ROOT / "royal-panels.svg"
+LIGHT_OUTPUT = ROOT / "royal-panels.svg"
+DARK_OUTPUT = ROOT / "royal-panels-dark.svg"
 LANGUAGES_OUTPUT = ROOT / "languages-mono.svg"
 
 API = "https://api.github.com"
-USER_AGENT = "REITHOMATO-profile-renderer/2.0"
+USER_AGENT = "REITHOMATO-profile-renderer/5.0"
 
 # ---------------------------------------------------------------- art direction
-
-BG = "#0D080B"
-INK = "#E2DAD2"
-INK_DIM = "#93867D"
-INK_FAINT = "#584E48"
-CRIMSON = "#B33A35"
-CRIMSON_LIGHT = "#CC3655"
-GOLD = "#C8A96A"
-
-CRIMSON_RAMP = ["#C2403A", "#A83734", "#8E2E31", "#7A2B2D", "#61252B", "#4E2026", "#3B1B21"]
 
 SERIF = "Georgia, 'Times New Roman', 'DejaVu Serif', serif"
 SANS = "'Segoe UI', Ubuntu, 'Helvetica Neue', Helvetica, Arial, sans-serif"
 
-HEAT_LEVELS = ["#241519", "#4A1E24", "#7A2B2D", "#A13433", "#CC3655"]
+#: GitHub's own foreground/neutral ramp plus its accent blue.
+THEMES = {
+    "light": {
+        "ink": "#1F2328",
+        "dim": "#59636E",
+        "faint": "#818B98",
+        "accent": "#0969DA",
+        "divider": "#1F2328",
+    },
+    "dark": {
+        "ink": "#E6EDF3",
+        "dim": "#9198A1",
+        "faint": "#6E7681",
+        "accent": "#4493F8",
+        "divider": "#E6EDF3",
+    },
+}
+
+#: Official GitHub language colours (github-linguist).
+LANGUAGE_COLORS = {
+    "Kotlin": "#A97BFF",
+    "TypeScript": "#3178C6",
+    "JavaScript": "#F1E05A",
+    "CSS": "#663399",
+    "HTML": "#E34C26",
+    "Go": "#00ADD8",
+    "Shell": "#89E051",
+    "Python": "#3572A5",
+    "Makefile": "#427819",
+    "Rust": "#DEA584",
+    "Java": "#B07219",
+    "C#": "#178600",
+    "C++": "#F34B7D",
+    "C": "#555555",
+    "Ruby": "#701516",
+    "PHP": "#4F5D95",
+    "Swift": "#F05138",
+    "Dart": "#00B4AB",
+    "Vue": "#41B883",
+    "Svelte": "#FF3E00",
+    "Lua": "#000080",
+    "Nix": "#7E7EFF",
+    "Dockerfile": "#384D54",
+    "PowerShell": "#012456",
+    "Batchfile": "#C1F12E",
+    "SCSS": "#C6538C",
+    "Astro": "#FF5A03",
+}
+
+FALLBACK_COLOR = "#8B949E"
 
 # ------------------------------------------------------------------- geometry
 
 WIDTH = 890
-HEIGHT = 470
 PAD = 24
 COL_W = 414
-TOP_H = 248
-TOP_Y = 24
-YEAR_H = 156
-YEAR_Y = 288
+PANEL_H = 224
+TOP_Y = 12
+HEIGHT = 244
+
+# Staggered delays keep the original "assembly" feel of the old cards.
+HEADER_DELAY = 0
+ROW_DELAYS = [180, 300, 420, 540, 660, 780]
+BAR_DELAY = 120
+LIST_DELAYS = [380, 470, 560, 650, 740, 830, 920]
 
 
 # ------------------------------------------------------------------- API layer
@@ -120,11 +173,6 @@ def collect(login: str, token: str) -> dict:
         page += 1
 
     owned = [r for r in repositories if not r.get("fork") and not r.get("archived")]
-    public = [r for r in owned if not r.get("private")]
-
-    pushes = [r.get("pushed_at") or "" for r in owned]
-    last_push = max((p for p in pushes if p), default="")
-
     profile = get_json(f"{API}/users/{login}", token)
 
     query = """
@@ -139,10 +187,7 @@ def collect(login: str, token: str) -> dict:
           }
         }
         contributionsCollection {
-          contributionCalendar {
-            totalContributions
-            weeks { contributionDays { date contributionCount } }
-          }
+          contributionCalendar { totalContributions }
         }
       }
     }
@@ -155,25 +200,11 @@ def collect(login: str, token: str) -> dict:
             name = edge["node"]["name"]
             totals[name] = totals.get(name, 0) + int(edge["size"])
 
-    days = [
-        day
-        for week in data["contributionsCollection"]["contributionCalendar"]["weeks"]
-        for day in week["contributionDays"]
-    ]
-
     return {
         "login": profile.get("login", login),
         "name": profile.get("name") or login,
         "since": (profile.get("created_at") or "2022-01-01")[:4],
         "repos_owned": len(owned),
-        "repos_public": len(public),
-        "active_repos": sum(
-            1 for r in owned
-            if (r.get("pushed_at") or "") >= (
-                dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=90)
-            ).strftime("%Y-%m-%d")
-        ),
-        "last_push": last_push,
         "stars": sum(int(r.get("stargazers_count") or 0) for r in owned),
         "commits": search_total("commits", f"author:{login}", token),
         "pull_requests": search_total("issues", f"author:{login} type:pr", token),
@@ -182,34 +213,7 @@ def collect(login: str, token: str) -> dict:
             data["contributionsCollection"]["contributionCalendar"]["totalContributions"]
         ),
         "languages": totals,
-        "days": days,
     }
-
-
-def streaks(days: list[dict]) -> tuple[int, int, dict | None]:
-    parsed = sorted(
-        ((dt.date.fromisoformat(d["date"]), int(d["contributionCount"])) for d in days),
-        key=lambda item: item[0],
-    )
-
-    longest = running = 0
-    for _, count in parsed:
-        running = running + 1 if count > 0 else 0
-        longest = max(longest, running)
-
-    current = 0
-    for index, (_, count) in enumerate(reversed(parsed)):
-        if count > 0:
-            current += 1
-        elif index == 0:      # today may still be quiet without breaking the streak
-            continue
-        else:
-            break
-
-    best = max(parsed, key=lambda item: item[1], default=None)
-    return current, longest, (
-        {"date": best[0].isoformat(), "count": best[1]} if best else None
-    )
 
 
 # ----------------------------------------------------------------- SVG helpers
@@ -224,8 +228,9 @@ def pretty(value: int) -> str:
 
 
 def text(x: float, y: float, value: str, *, size: float = 11, weight: int = 400,
-         fill: str = INK, family: str = SANS, anchor: str = "start",
-         spacing: float | None = None, opacity: float | None = None) -> str:
+         fill: str, family: str = SANS, anchor: str = "start",
+         spacing: float | None = None, cls: str | None = None,
+         delay: int | None = None) -> str:
     parts = [
         f'x="{x:.1f}"', f'y="{y:.1f}"',
         f'font-family="{family}"', f'font-size="{size}"',
@@ -235,276 +240,232 @@ def text(x: float, y: float, value: str, *, size: float = 11, weight: int = 400,
         parts.append(f'text-anchor="{anchor}"')
     if spacing is not None:
         parts.append(f'letter-spacing="{spacing}"')
-    if opacity is not None:
-        parts.append(f'opacity="{opacity}"')
+    if cls:
+        parts.append(f'class="{cls}"')
+        if delay is not None:
+            parts.append(f'style="animation-delay:{delay}ms"')
     return f"<text {' '.join(parts)}>{escape(value)}</text>"
 
 
-def panel_header(title: str, glyph: str, width: float) -> str:
-    return (
-        text(0, 21, f"{glyph}  {title}", size=16.5, weight=400, fill=CRIMSON, family=SERIF)
-        + f'<rect x="0" y="32" width="{width:.1f}" height="1" fill="url(#rule)"/>'
-    )
-
-
-def tile(x: float, y: float, label: str, value: str, accent: str, width: float = 196) -> str:
+def glyph(kind: str, x: float, y: float, colour: str, delay: int = 0) -> str:
+    """Hand drawn marks: font glyphs render too differently across systems."""
+    if kind == "crown":
+        inner = (
+            f'<path d="M2 12.4 L3.1 4.1 L6.6 7.9 L9.5 1.6 L12.4 7.9 L15.9 4.1 '
+            f'L17 12.4 Z" fill="{colour}"/>'
+            f'<rect x="2" y="12.9" width="15" height="3.1" rx="1" fill="{colour}"/>'
+        )
+    else:  # stacked code marks
+        inner = (
+            f'<path d="M6.9 4.2 L2.4 8.7 L6.9 13.2" fill="none" stroke="{colour}" '
+            f'stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>'
+            f'<path d="M13.1 4.2 L17.6 8.7 L13.1 13.2" fill="none" stroke="{colour}" '
+            f'stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>'
+            f'<path d="M11.4 2.6 L9.6 14.8" stroke="{colour}" stroke-width="1.9" '
+            f'stroke-linecap="round"/>'
+        )
     return (
         f'<g transform="translate({x:.1f}, {y:.1f})">'
-        f'<rect width="{width}" height="56" rx="10" fill="#150D11" stroke="#251519"/>'
-        f'<rect x="0" y="11" width="2.5" height="34" rx="1.25" fill="{accent}"/>'
-        + text(15, 23, label, size=8.5, weight=600, fill=INK_DIM, spacing=1.3)
-        + text(15, 46, value, size=21, weight=700)
-        + "</g>"
+        f'<g class="glyph" style="animation-delay:{delay}ms">{inner}</g>'
+        "</g>"
     )
 
 
-def credits(y: float, left_value: str, width: float, right_value: str = "") -> str:
-    out = text(0, y, left_value, size=8.5, weight=500, fill=INK_FAINT, spacing=0.9)
-    if right_value:
-        out += text(width, y, right_value, size=8.5, weight=500, fill=INK_FAINT,
-                    spacing=0.9, anchor="end")
-    return out
+def panel_header(title: str, kind: str, width: float, theme: dict) -> str:
+    return (
+        glyph(kind, 0, 1, theme["accent"], HEADER_DELAY)
+        + text(26, 17, title, size=16.5, weight=400, fill=theme["ink"],
+               family=SERIF, spacing=0.3, cls="head", delay=HEADER_DELAY)
+        + f'<rect x="0" y="27" width="{width:.1f}" height="1" '
+        f'fill="url(#rule-{theme["name"]})" class="head" '
+        f'style="animation-delay:{HEADER_DELAY}ms"/>'
+    )
+
+
+def figure(x: float, y: float, label: str, value: str, theme: dict,
+           delay: int) -> str:
+    return (
+        f'<g class="row" style="animation-delay:{delay}ms">'
+        + text(x, y, label, size=8.5, weight=600, fill=theme["dim"], spacing=1.3)
+        + text(x, y + 25, value, size=22, weight=700, fill=theme["ink"])
+        + "</g>"
+    )
 
 
 # --------------------------------------------------------------- panels: build
 
 
-def stats_panel(d: dict, width: float, height: float) -> str:
-    tiles = [
-        ("TOTAL STARGAZERS", pretty(d["stars"])),
-        ("COMMITS", pretty(d["commits"])),
+def stats_panel(d: dict, width: float, height: float, theme: dict) -> str:
+    left = [
+        ("ESTRELAS", pretty(d["stars"])),
         ("PULL REQUESTS", pretty(d["pull_requests"])),
-        ("ISSUES", pretty(d["issues"])),
-        ("REPOSITORIES", pretty(d["repos_owned"])),
-        ("CONTRIBUTIONS / YEAR", pretty(d["contributions"])),
+        ("REPOSIT\u00d3RIOS", pretty(d["repos_owned"])),
     ]
-    body = [panel_header("THE ROYAL RECORD", "\u265b", width)]
-    right = width - 196
-    spots = [(0, 42), (right, 42), (0, 106), (right, 106), (0, 170), (right, 170)]
-    for (x, y), (label, value) in zip(spots, tiles):
-        body.append(tile(x, y, label, value, CRIMSON_LIGHT if "CONTRIBUTIONS" in label else CRIMSON))
-    body.append(credits(height - 8, f"SINCE {d['since']}  \u00b7  {d['repos_owned']} OWNED", width))
+    right = [
+        ("COMMITS", pretty(d["commits"])),
+        ("ISSUES", pretty(d["issues"])),
+        ("CONTRIBUI\u00c7\u00d5ES / ANO", pretty(d["contributions"])),
+    ]
+
+    body = [panel_header("O REGISTRO REAL", "crown", width, theme)]
+    rows = [48, 110, 172]
+    for index, y in enumerate(rows):
+        delay = ROW_DELAYS[index * 2]
+        body.append(figure(0, y, left[index][0], left[index][1], theme, delay))
+        body.append(
+            figure(width - 196, y, right[index][0], right[index][1], theme, delay + 60)
+        )
+        if index < len(rows) - 1:
+            body.append(
+                f'<rect x="0" y="{y + 44}" width="{width:.1f}" height="1" '
+                f'fill="{theme["divider"]}" opacity="0.14" class="row" '
+                f'style="animation-delay:{delay + 90}ms"/>'
+            )
+
+    body.append(
+        text(0, height - 4, f"DESDE {d['since']}", size=8.5, weight=600,
+             fill=theme["faint"], spacing=1.2, cls="row",
+             delay=ROW_DELAYS[-1] + 120)
+    )
     return "".join(body)
 
 
-def languages_panel(d: dict, width: float, height: float) -> str:
+def languages_panel(d: dict, width: float, height: float, theme: dict) -> str:
     ranked = sorted(d["languages"].items(), key=lambda item: item[1], reverse=True)
     total = sum(d["languages"].values()) or 1
     shown = ranked[:7]
 
-    body = [panel_header("THE KINGDOM'S TONGUE", "\u2318", width)]
+    def colour_of(name: str) -> str:
+        return LANGUAGE_COLORS.get(name, FALLBACK_COLOR)
 
-    bar_y, bar_h = 46, 12
+    body = [panel_header("LINGUAGENS", "code", width, theme)]
+
+    bar_y, bar_h = 43, 11
+    clip = (
+        f'<clipPath id="bar-{theme["name"]}" clipPathUnits="userSpaceOnUse">'
+        f'<rect class="wipe" x="0" y="{bar_y}" width="{width:.1f}" height="{bar_h}" '
+        f'style="animation-delay:{BAR_DELAY}ms"/></clipPath>'
+    )
+
+    segments = []
     offset = 0.0
-    for index, (_, size) in enumerate(shown):
+    for _, (name, size) in enumerate(shown):
         segment = width * (size / total)
-        colour = CRIMSON_RAMP[min(index, len(CRIMSON_RAMP) - 1)]
-        body.append(
+        segments.append(
             f'<rect x="{offset:.2f}" y="{bar_y}" width="{max(segment, 0.9):.2f}" '
-            f'height="{bar_h}" rect-fill="{colour}" fill="{colour}" '
-            f'opacity="{1 - index * 0.04:.2f}"/>'
+            f'height="{bar_h}" fill="{colour_of(name)}"/>'
         )
         offset += segment
-    body.append(
-        f'<rect x="0" y="{bar_y}" width="{width}" height="{bar_h}" rx="4" '
-        f'fill="none" stroke="#2A181C" stroke-width="1"/>'
-    )
+
+    body.append(clip)
+    body.append(f'<g clip-path="url(#bar-{theme["name"]})">{"".join(segments)}</g>')
 
     columns = [shown[:4], shown[4:]]
     for column_index, column in enumerate(columns):
         col_x = column_index * 210
         for row_index, (name, size) in enumerate(column):
-            cy = 86 + row_index * 26
+            cy = 87 + row_index * 27
             global_index = column_index * 4 + row_index
-            colour = CRIMSON_RAMP[min(global_index, len(CRIMSON_RAMP) - 1)]
+            delay = LIST_DELAYS[global_index]
             body.append(
-                f'<g transform="translate({col_x}, {cy})">'
-                f'<circle cx="4.5" cy="-3.5" r="4.5" fill="{colour}"/>'
-                + text(16, 0, name, size=11.5)
-                + text(190, 0, f"{size / total * 100:.1f}%", size=11.5, weight=600,
-                       fill=INK_DIM, anchor="end")
+                f'<g class="row" style="animation-delay:{delay}ms">'
+                f'<circle cx="{col_x + 4.5:.1f}" cy="{cy - 3.5:.1f}" r="4.5" '
+                f'fill="{colour_of(name)}"/>'
+                + text(col_x + 16, cy, name, size=11.5, fill=theme["ink"])
+                + text(col_x + 190, cy, f"{size / total * 100:.1f}%", size=11.5,
+                       weight=600, fill=theme["dim"], anchor="end")
                 + "</g>"
             )
 
-    # Fill the quiet lower band with facts that change over time.
-    active = d.get("active_repos", 0)
-    last_push = d.get("last_push", "")
-    last_label = ""
-    if last_push:
-        stamp = dt.datetime.fromisoformat(last_push.replace("Z", "+00:00"))
-        last_label = stamp.strftime("%d %b %Y").upper()
-
     body.append(
-        f'<rect x="0" y="{height - 58}" width="{width}" height="1" fill="#241519"/>'
+        text(width, height - 4, "PONDERADO POR BYTES", size=8.5, weight=600,
+             fill=theme["faint"], spacing=1.2, anchor="end", cls="row",
+             delay=LIST_DELAYS[-1] + 140)
     )
-    facts = [
-        (0, "ACTIVE (90 DAYS)", f"{active} of {d['repos_owned']}"),
-        (210, "LAST PUSH", last_label or "\u2014"),
-    ]
-    for x, label, value in facts:
-        body.append(
-            f'<g transform="translate({x}, {height - 44})">'
-            + text(0, 0, label, size=7.5, weight=600, fill=INK_DIM, spacing=1.1)
-            + text(0, 13, value, size=11.5, weight=700)
-            + "</g>"
-        )
-
-    body.append(text(width, height - 8, "WEIGHTED BY BYTES", size=8.5, weight=500,
-                     fill=INK_FAINT, spacing=0.9, anchor="end"))
-    return "".join(body)
-
-def year_panel(d: dict, width: float, height: float) -> str:
-    days = d["days"]
-    current, longest, best = streaks(days)
-
-    body = [
-        panel_header("THE YEAR IN CRIMSON", "\u2694", width),
-        text(width, 21, f"{pretty(d['contributions'])} CONTRIBUTIONS  \u00b7  LAST 12 MONTHS",
-             size=9.5, weight=600, fill=INK_DIM, anchor="end", spacing=1.5),
-    ]
-
-    step, cell = 11.2, 8.2
-    columns = 53
-    grid_x, grid_y = 0, 54
-    trimmed = days[-columns * 7:]
-    peak = max((int(day["contributionCount"]) for day in trimmed), default=1) or 1
-
-    def level(count: int) -> int:
-        if count <= 0:
-            return 0
-        ratio = count / peak
-        return 1 if ratio < 0.2 else 2 if ratio < 0.42 else 3 if ratio < 0.7 else 4
-
-    for column in range(columns):
-        for row in range(7):
-            index = column * 7 + row
-            if index >= len(trimmed):
-                continue
-            day = trimmed[index]
-            count = int(day["contributionCount"])
-            body.append(
-                f'<rect x="{grid_x + column * step}" y="{grid_y + row * step}" '
-                f'width="{cell}" height="{cell}" rx="2" fill="{HEAT_LEVELS[level(count)]}">'
-                f"<title>{escape(day['date'])} \u00b7 {count} "
-                f"contribution{'s' if count != 1 else ''}</title></rect>"
-            )
-
-    # Month labels: one per month, skipped when it would collide with the previous.
-    last_column = -99
-    for column in range(columns):
-        index = column * 7
-        if index >= len(trimmed):
-            break
-        month = trimmed[index]["date"][:7]
-        if column == 0:
-            previous_month = None
-        else:
-            previous_month = trimmed[index - 7]["date"][:7]
-        if month != previous_month and column - last_column >= 4:
-            label = dt.date.fromisoformat(trimmed[index]["date"]).strftime("%b").upper()
-            body.append(text(grid_x + column * step, grid_y - 7, label,
-                             size=7.5, weight=500, fill=INK_FAINT, spacing=0.8))
-            last_column = column
-
-    summary_x = 626
-    summary_w = width - summary_x
-    summary = [
-        ("CURRENT STREAK", f"{current} day{'s' if current != 1 else ''}"),
-        ("LONGEST STREAK", f"{longest} day{'s' if longest != 1 else ''}"),
-        ("BEST DAY", f"{best['count']} \u00b7 {dt.date.fromisoformat(best['date']).strftime('%d %b').upper()}"
-         if best else "0"),
-    ]
-    for index, (label, value) in enumerate(summary):
-        y = 48 + index * 30
-        body.append(
-            f'<g transform="translate({summary_x}, {y})">'
-            f'<rect width="{summary_w}" height="26" rx="8" fill="#150D11" stroke="#251519"/>'
-            + text(11, 11, label, size=7, weight=600, fill=INK_DIM, spacing=1.1)
-            + text(11, 22, value, size=11.5, weight=700)
-            + "</g>"
-        )
-
-    legend_label_x = width - 110
-    body.append(text(legend_label_x, height - 8, "LESS", size=7.5, weight=500,
-                     fill=INK_FAINT, spacing=0.8))
-    for index, colour in enumerate(HEAT_LEVELS):
-        body.append(
-            f'<rect x="{legend_label_x + 22 + index * 11}" y="{height - 15}" width="8" '
-            f'height="8" rx="2" fill="{colour}"/>'
-        )
-    body.append(text(width, height - 8, "MORE", size=7.5, weight=500,
-                     fill=INK_FAINT, anchor="end", spacing=0.8))
     return "".join(body)
 
 
 # --------------------------------------------------------------------- assembly
 
-CARD_STYLE = """
-  text { shape-rendering: geometricPrecision; }
-  svg { shape-rendering: geometricPrecision; }
+#: Animations mirror the original cards: a fade for headers, a staggered fade
+#: for each row and a left-to-right wipe for the language bar.
+#:
+#: ``animation-fill-mode: backwards`` (not ``both``) is deliberate. It still
+#: hides the element during its delay and animates it in, but once finished the
+#: element returns to its natural style, which has no opacity/transform set.
+#: If a renderer skips CSS animations entirely the content stays visible instead
+#: of remaining at the invisible first keyframe.
+ANIMATIONS = """
+  .head  { animation: fade 700ms ease-in-out backwards; }
+  .row   { animation: fade 340ms ease-in-out backwards; }
+  .glyph { animation: jewel 620ms cubic-bezier(.22,1,.36,1) backwards;
+           transform-box: fill-box; transform-origin: center; }
+  .wipe  { animation: wipe 950ms cubic-bezier(.4,0,.2,1) backwards;
+           transform-box: fill-box; transform-origin: left center; }
+  @keyframes fade  { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes jewel { from { opacity: 0; transform: scale(.6); }
+                     to   { opacity: 1; transform: scale(1); } }
+  @keyframes wipe  { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  @media (prefers-reduced-motion: reduce) {
+    .head, .row, .glyph, .wipe { animation: none !important; }
+  }
 """
 
 
-def defs() -> str:
+def defs(theme: dict) -> str:
     return (
         "<defs>"
-        '<linearGradient id="rule" x1="0" y1="0" x2="1" y2="0">'
-        f'<stop offset="0" stop-color="{CRIMSON}" stop-opacity="0.65"/>'
-        f'<stop offset="0.55" stop-color="{INK_FAINT}" stop-opacity="0.22"/>'
-        f'<stop offset="1" stop-color="{INK_FAINT}" stop-opacity="0"/>'
-        "</linearGradient>"
-        '<linearGradient id="glow" x1="0" y1="0" x2="0" y2="1">'
-        f'<stop offset="0" stop-color="{CRIMSON}" stop-opacity="0.13"/>'
-        f'<stop offset="0.45" stop-color="{CRIMSON}" stop-opacity="0.03"/>'
-        f'<stop offset="1" stop-color="{CRIMSON}" stop-opacity="0"/>'
+        f'<linearGradient id="rule-{theme["name"]}" x1="0" y1="0" x2="1" y2="0">'
+        f'<stop offset="0" stop-color="{theme["accent"]}" stop-opacity="0.85"/>'
+        f'<stop offset="0.55" stop-color="{theme["divider"]}" stop-opacity="0.16"/>'
+        f'<stop offset="1" stop-color="{theme["divider"]}" stop-opacity="0"/>'
         "</linearGradient>"
         "</defs>"
     )
 
 
-def build_combined_svg(d: dict) -> str:
+def build_combined_svg(d: dict, theme_name: str) -> str:
+    theme = dict(THEMES[theme_name], name=theme_name)
     summary = (
-        f"{d['name']} statistics: {d['stars']} stars, {d['commits']} commits, "
+        f"N\u00fameros de {d['name']}: {d['stars']} estrelas, {d['commits']} commits, "
         f"{d['pull_requests']} pull requests, {d['issues']} issues, "
-        f"{d['repos_owned']} owned repositories, {d['contributions']} contributions."
+        f"{d['repos_owned']} reposit\u00f3rios e {d['contributions']} contribui\u00e7\u00f5es no ano."
     )
+    divider = PAD + COL_W + 23
+
     parts = [
         "<?xml version='1.0' encoding='utf-8'?>",
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{WIDTH}" height="{HEIGHT}" '
-        f'viewBox="0 0 {WIDTH} {HEIGHT}" fill="none" role="img" '
-        f'aria-labelledby="royal-title royal-desc">',
-        '<title id="royal-title">REITHOMATO \u2014 statistics, languages and the year in contributions</title>',
-        f'<desc id="royal-desc">{escape(summary)}</desc>',
-        f"<style>{CARD_STYLE}</style>",
-        defs(),
-        f'<rect width="{WIDTH}" height="{HEIGHT}" rx="14" fill="{BG}"/>',
-        f'<rect width="{WIDTH}" height="170" fill="url(#glow)"/>',
-        '<g class="sheet">',
+        f'viewBox="0 0 {WIDTH} {HEIGHT}" role="img" '
+        f'aria-labelledby="real-titulo real-descricao">',
+        '<title id="real-titulo">REITHOMATO \u2014 n\u00fameros do perfil</title>',
+        f'<desc id="real-descricao">{escape(summary)}</desc>',
+        f"<style>{ANIMATIONS}</style>",
+        defs(theme),
         f'<g transform="translate({PAD}, {TOP_Y})">'
-        f"{stats_panel(d, COL_W, TOP_H)}</g>",
-        f'<rect x="445" y="{TOP_Y + 4}" width="1" height="{TOP_H - 16}" '
-        f'fill="{INK_FAINT}" opacity="0.3"/>',
+        f"{stats_panel(d, COL_W, PANEL_H, theme)}</g>",
+        f'<rect x="{divider}" y="{TOP_Y + 2}" width="1" height="{PANEL_H - 26}" '
+        f'fill="{theme["divider"]}" opacity="0.16"/>',
         f'<g transform="translate({PAD + COL_W + 28}, {TOP_Y})">'
-        f"{languages_panel(d, COL_W, TOP_H)}</g>",
-        f'<g transform="translate({PAD}, {YEAR_Y})">{year_panel(d, WIDTH - PAD * 2, YEAR_H)}</g>',
-        "</g>",
+        f"{languages_panel(d, COL_W, PANEL_H, theme)}</g>",
         "</svg>",
     ]
     return "\n".join(parts)
 
 
 def build_languages_svg(d: dict) -> str:
-    width, height = 440, 272
+    width, height = 440, 236
+    theme = dict(THEMES["dark"], name="dark")
     parts = [
         "<?xml version='1.0' encoding='utf-8'?>",
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
-        f'viewBox="0 0 {width} {height}" fill="none" role="img" aria-labelledby="lang-title">',
-        '<title id="lang-title">Most used languages, weighted by bytes</title>',
-        f"<style>{CARD_STYLE}</style>",
-        defs(),
-        f'<rect width="{width}" height="{height}" rx="12" fill="{BG}"/>',
-        f'<g class="sheet" transform="translate({PAD}, 24)">'
-        f"{languages_panel(d, width - PAD * 2, height - 24)}</g>",
+        f'viewBox="0 0 {width} {height}" role="img" '
+        f'aria-labelledby="linguas-titulo">',
+        '<title id="linguas-titulo">Linguagens mais usadas, ponderadas por bytes</title>',
+        f"<style>{ANIMATIONS}</style>",
+        defs(theme),
+        f'<g transform="translate({PAD}, 18)">'
+        f"{languages_panel(d, width - PAD * 2, 196, theme)}</g>",
         "</svg>",
     ]
     return "\n".join(parts)
@@ -523,12 +484,13 @@ def main() -> int:
         print(f"Could not read GitHub data: {exc}", file=sys.stderr)
         return 1
 
-    COMBINED_OUTPUT.write_text(build_combined_svg(data) + "\n", encoding="utf-8")
+    LIGHT_OUTPUT.write_text(build_combined_svg(data, "light") + "\n", encoding="utf-8")
+    DARK_OUTPUT.write_text(build_combined_svg(data, "dark") + "\n", encoding="utf-8")
     LANGUAGES_OUTPUT.write_text(build_languages_svg(data) + "\n", encoding="utf-8")
 
     print(
-        f"{data['login']}: {data['stars']} stars, {data['commits']} commits, "
-        f"{data['contributions']} contributions, {len(data['languages'])} languages"
+        f"{data['login']}: {data['stars']} estrelas, {data['commits']} commits, "
+        f"{data['contributions']} contribuicoes, {len(data['languages'])} linguagens"
     )
     return 0
 
