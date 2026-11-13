@@ -3,8 +3,10 @@ name: Refresh profile visuals
 on:
   workflow_dispatch:
   schedule:
-    # Every day at 06:23 UTC (03:23 in Sao Paulo).
-    - cron: "23 6 * * *"
+    # Every 3 hours. GitHub only queues scheduled runs, and under load they
+    # can start hours after the slot; a single daily run could therefore land
+    # almost a day late. Four windows a day keep the panel close to real time.
+    - cron: "0 */3 * * *"
   push:
     branches:
       - main
