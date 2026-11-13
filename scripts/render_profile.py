@@ -31,6 +31,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -123,21 +124,47 @@ LIST_DELAYS = [380, 470, 560, 650, 740, 830, 920]
 
 
 def _open(url: str, token: str, *, data: bytes | None = None,
-          accept: str = "application/vnd.github+json") -> bytes:
-    request = urllib.request.Request(
-        url,
-        data=data,
-        method="POST" if data is not None else "GET",
-        headers={
-            "Authorization": f"Bearer {token}",
-            "User-Agent": USER_AGENT,
-            "Accept": accept,
-            "X-GitHub-Api-Version": "2022-11-28",
-            "Content-Type": "application/json",
-        },
-    )
-    with urllib.request.urlopen(request, timeout=45) as response:
-        return response.read()
+          accept: str = "application/vnd.github+json",
+          attempts: int = 4) -> bytes:
+    """GET/POST with a short exponential backoff.
+
+    GitHub answers 5xx, 429 and secondary-rate-limit 403s when it is busy.
+    Those are transient: retrying turns a wasted three-hour window into a
+    run that still succeeds. A bad token answers 401, which is not retried
+    and fails the job loudly instead of rendering an empty card.
+    """
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "User-Agent": USER_AGENT,
+        "Accept": accept,
+        "X-GitHub-Api-Version": "2022-11-28",
+        "Content-Type": "application/json",
+    }
+    retryable = {403, 429, 500, 502, 503, 504}
+    last: Exception | None = None
+
+    for attempt in range(attempts):
+        request = urllib.request.Request(
+            url,
+            data=data,
+            method="POST" if data is not None else "GET",
+            headers=headers,
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=45) as response:
+                return response.read()
+        except urllib.error.HTTPError as exc:
+            if exc.code not in retryable:
+                raise
+            last = exc
+        except urllib.error.URLError as exc:
+            last = exc
+
+        if attempt + 1 < attempts:
+            time.sleep(2 ** (attempt + 1))
+
+    assert last is not None
+    raise last
 
 
 def get_json(url: str, token: str) -> dict:
@@ -524,6 +551,27 @@ def main() -> int:
         data = collect(login, token)
     except (urllib.error.URLError, RuntimeError, KeyError, ValueError) as exc:
         print(f"Could not read GitHub data: {exc}", file=sys.stderr)
+        return 1
+
+    # A token that lost access returns empty lists instead of an error, which
+    # used to publish a card full of zeros. Refuse that: a red run is visible,
+    # a silently wrong card is not.
+    empty = [
+        label
+        for label, value in (
+            ("repositorios", data["repos_owned"]),
+            ("commits", data["commits"]),
+            ("contribuicoes", data["contributions"]),
+            ("linguagens", len(data["languages"])),
+        )
+        if not value
+    ]
+    if empty:
+        print(
+            "Refusing to publish an empty card (no " + ", ".join(empty) + "). "
+            "Check whether PROFILE_TOKEN still sees the repositories.",
+            file=sys.stderr,
+        )
         return 1
 
     LIGHT_OUTPUT.write_text(build_combined_svg(data, "light") + "\n", encoding="utf-8")

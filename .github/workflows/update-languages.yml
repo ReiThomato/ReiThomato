@@ -3,10 +3,11 @@ name: Refresh profile visuals
 on:
   workflow_dispatch:
   schedule:
-    # Every 3 hours. GitHub only queues scheduled runs, and under load they
-    # can start hours after the slot; a single daily run could therefore land
-    # almost a day late. Four windows a day keep the panel close to real time.
-    - cron: "0 */3 * * *"
+    # Every 3 hours, at :17. GitHub warns that "high load times include the
+    # start of every hour" and that queued runs can even be dropped, so the
+    # slot deliberately avoids :00. Four windows a day mean a late or dropped
+    # run is covered by the next one within a few hours.
+    - cron: "17 */3 * * *"
   push:
     branches:
       - main
